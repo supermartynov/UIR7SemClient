@@ -7,7 +7,7 @@
         <img class="navbar-brand-minimized" src="img/brand/sygnet.svg" width="30" height="30" alt="CoreUI Logo">
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" />
-      <b-navbar-nav class="d-md-down-none ml-auto">
+      <b-navbar-nav class="d-md-down-none  mr-md-2">
         <b-nav-item class="d-md-down-none">
             <ProjectHeader/>
         </b-nav-item>
