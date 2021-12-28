@@ -104,7 +104,7 @@ export default {
         password: this.form.password,
         email: this.form.email
       })
-      .then(res => {
+      .then(() => {
         this.$router.push("/authorization")
       })
       .catch(err => {

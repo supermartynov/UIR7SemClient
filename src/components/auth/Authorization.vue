@@ -12,12 +12,28 @@
 
                   <b-input-group class="mb-3">
                     <b-input-group-prepend><b-input-group-text><i class="icon-user"></i></b-input-group-text></b-input-group-prepend>
-                    <b-form-input type="text" v-model="form.username" class="form-control" placeholder="Username" autocomplete="username email" />
+                    <b-form-input type="text"
+                                  v-model="form.email"
+                                  class="form-control"
+                                  :class="{'is-invalid': ($v.form.email.$dirty && !$v.form.email.required || $v.form.email.$dirty && !$v.form.email.email)}"
+                                  placeholder="Username"
+                                  autocomplete="username email" />
+                    <small class="invalid-feedback" v-if="$v.form.email.$dirty && !$v.form.email.required || $v.form.email.$dirty && !$v.form.email.email">
+                      Некорректный email
+                    </small>
                   </b-input-group>
 
                   <b-input-group class="mb-4">
                     <b-input-group-prepend><b-input-group-text><i class="icon-lock"></i></b-input-group-text></b-input-group-prepend>
-                    <b-form-input type="password" v-model="form.password" class="form-control" placeholder="Password" autocomplete="current-password" />
+                    <b-form-input type="password"
+                                  v-model="form.password"
+                                  class="form-control"
+                                  :class="{'is-invalid': !show}"
+                                  placeholder="Password"
+                                  autocomplete="current-password" />
+                    <small class="invalid-feedback d-block" v-if="show">
+                      Неверный email или пароль
+                    </small>
                   </b-input-group>
 
                   <b-row>
@@ -27,12 +43,6 @@
                     <b-col cols="4" class="ml-auto mr-auto mt-auto ">
                       <router-link to="/">На главную</router-link>
                     </b-col>
-
-                  </b-row>
-                  <b-row>
-                    <b-col cols="3" class="text-right">
-                      <b-badge show v-if="show" variant="danger">Неверный пароль или логин</b-badge>
-                    </b-col>
                   </b-row>
                 </b-form>
               </b-card-body>
@@ -41,7 +51,7 @@
             <b-card no-body class="text-white bg-primary py-5 d-md-down-none" style="width:44%">
               <b-card-body class="text-center">
                 <div>
-                  <h2>Не зарегесрированы?</h2>
+                  <h2>Не зарегистрированы?</h2>
                   <h4>Начните изучать SQL уже сегодня!</h4>
                   <router-link to="registration">
                     <b-button variant="primary" class="active mt-3">
@@ -60,33 +70,45 @@
 
 <script>
 import axios from "axios";
+import {validationMixin} from 'vuelidate'
+import {email, required, minLength} from 'vuelidate/lib/validators'
 
 export default {
   name: 'Login',
+  mixins: [validationMixin,],
   data() {
     return {
       form: {
-        username: '',
+        email: '',
         password: ''
       },
       show: false
     }
   },
+  validations: {
+    form: {
+      email: {required, email},
+      password: {required, minLength: minLength(5)}
+    }
+  },
   methods: {
     login() {
+      if (this.$v.$invalid) {
+        this.$v.$touch()
+        return
+      }
       axios.post("http://localhost:9000/login", {
-        username: this.form.username,
+        username: this.form.email,
         password: this.form.password
       })
       .then(() => {
-        this.$store.commit('SET_USER_NAME', this.form.username)
+        this.$store.commit('SET_USER_NAME', this.form.email)
         console.log(this.$store.getters.GET_USER_NAME)
         this.show = !this.show
         this.$router.push("/dashboard")
         })
       .catch(err => {
         this.show = true
-        console.log(err)
       })
     }
   }
