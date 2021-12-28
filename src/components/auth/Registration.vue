@@ -16,16 +16,7 @@
                 </b-row>
 
                 <p class="text-muted">Создайте аккаунт</p>
-                <b-input-group class="mb-3">
-                  <b-input-group-prepend>
-                    <b-input-group-text><i class="icon-user"></i></b-input-group-text>
-                  </b-input-group-prepend>
-                  <b-form-input type="text"
-                                class="form-control"
-                                v-model="form.username"
-                                placeholder="Имя пользователя"
-                                autocomplete="username" />
-                </b-input-group>
+
                 <b-input-group id="email_input" class="mb-3">
                   <b-input-group-prepend>
                     <b-input-group-text>@</b-input-group-text>
@@ -36,7 +27,12 @@
                                 :class="{'is-invalid': ($v.form.email.$dirty && !$v.form.email.required || $v.form.email.$dirty && !$v.form.email.email)}"
                                 placeholder="Почта"
                                 autocomplete="email" />
-                  <b-form-invalid-feedback id="email_input_invalid_feedback">Некорректная формат почты</b-form-invalid-feedback>
+                  <small class="invalid-feedback" v-if="$v.form.email.$dirty && !$v.form.email.required || $v.form.email.$dirty && !$v.form.email.email">
+                    Некорректный email
+                  </small>
+                  <small class="invalid-feedback d-block" v-else-if="alreadyTakenEmail">
+                    Данная почта уже занята
+                  </small>
                 </b-input-group>
 
                 <b-input-group class="mb-3">
@@ -46,9 +42,12 @@
                   <b-form-input type="password"
                                 class="form-control"
                                 v-model="form.password"
-                                :class="{'is-invalid': ($v.form.password.$dirty && !$v.form.password.required)}"
+                                :class="{'is-invalid': ($v.form.password.$dirty && !$v.form.password.required) || ($v.form.password.$dirty && !$v.form.password.minLength)}"
                                 placeholder="Пароль"
                                 autocomplete="new-password"  />
+                  <small class="invalid-feedback d-block" v-if="($v.form.password.$dirty && !$v.form.password.required) || ($v.form.password.$dirty && !$v.form.password.minLength)">
+                    Минимальная длина пароля - {{ $v.form.password.$params.minLength.min }} символов
+                  </small>
                 </b-input-group>
 
                 <b-input-group class="mb-4">
@@ -56,6 +55,9 @@
                     <b-input-group-text><i class="icon-lock"></i></b-input-group-text>
                   </b-input-group-prepend>
                   <b-form-input type="password" v-model="form.password_confirm" class="form-control" placeholder="Подтверждение пароля" autocomplete="new-password"/>
+                  <small v-if="form.password !== form.password_confirm && $v.form.password_confirm.$dirty" class="invalid-feedback d-block">
+                    Пароли не совпадают
+                  </small>
                 </b-input-group>
                 <b-button type="submit" variant="success" block>Создать аккаунт</b-button>
               </b-form>
@@ -77,40 +79,38 @@ export default {
   data() {
     return {
       form : {
-        username: '',
         password: '',
         email: '',
         password_confirm: ''
       },
-      show: false
+      show: false,
+      alreadyTakenEmail: false
     }
   },
   validations: {
     form : {
-      username: {required, minLength: minLength(7)},
-      password: {required, minLength: minLength(7)},
+      password: {required, minLength: minLength(5)},
       email: {required, email},
-      password_confirm: {required, minLength: minLength(7)}
-    }
+      password_confirm: {required, minLength: minLength(5)},
+    },
   },
   methods: {
     register()  {
-      if (this.$v.$invalid) {
-        console.log("невалидно")
+      if (this.$v.$invalid || (this.form.password !== this.form.password_confirm && this.$v.form.password_confirm.$dirty)) {
         this.$v.$touch()
         return
       }
       axios.post("http://localhost:9000/register", {
-        username: this.form.username,
         password: this.form.password,
         email: this.form.email
       })
       .then(res => {
         this.$router.push("/authorization")
-        console.log(res)
       })
       .catch(err => {
-        console.log(err)
+        if (err.response.request.status === 409) {
+          this.alreadyTakenEmail = true;
+        }
       })
     }
   },
