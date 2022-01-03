@@ -1,13 +1,9 @@
 export default {
   items: [
     {
-      name: 'Dashboard',
+      name: 'Курс',
       url: '/dashboard',
-      icon: 'icon-speedometer',
-      badge: {
-        variant: 'primary',
-        text: 'NEW'
-      }
+      icon: 'icon-home',
     }
   ]
 }

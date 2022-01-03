@@ -3,8 +3,8 @@
     <AppHeader fixed>
       <SidebarToggler class="d-lg-none" display="md" mobile />
       <b-link class="navbar-brand" to="#">
-        <img class="navbar-brand-full" src="img/brand/logo.svg" width="89" height="25" alt="CoreUI Logo">
-        <img class="navbar-brand-minimized" src="img/brand/sygnet.svg" width="30" height="30" alt="CoreUI Logo">
+        <img class="navbar-brand-full" src="img/brand/icons8-database-50.png" width="40" height="40" alt="SQL learner">
+        <img class="navbar-brand-minimized" src="img/brand/icons8-database-50.png" width="30" height="30" alt="SQL">
       </b-link>
       <SidebarToggler class="d-md-down-none" display="lg" />
       <b-navbar-nav class="d-md-down-none  mr-md-2">
@@ -16,7 +16,7 @@
 
     <div class="app-body">
       <AppSidebar fixed>
-        <SidebarHeader/>
+        <SidebarHeader> Обучение</SidebarHeader>
         <SidebarForm/>
         <SidebarNav :navItems="navItems"></SidebarNav>
         <SidebarFooter/>
@@ -35,16 +35,9 @@
     </div>
 
     <TheFooter>
-      <!--footer-->
-
-      <div>
-        <a href="https://coreui.io">CoreUI</a>
-        <span class="ml-1">&copy; 2018 creativeLabs.</span>
-      </div>
-      <div class="ml-auto">
-        <span class="mr-1">Powered by</span>
-        <a href="https://coreui.io">CoreUI for Vue</a>
-      </div>
+      Учи бд
+      <b-button varian="primary" @click="check">Кнопка</b-button>
+      <router-link to="/registration"><b-button varian="primary">Кнопка2</b-button></router-link>
     </TheFooter>
   </div>
 </template>
@@ -56,6 +49,7 @@ import DefaultAside from './DefaultAside'
 import DefaultHeaderDropdown from '../headers/DefaultHeaderDropdown'
 import DefaultHeaderDropdownAccnt from "@/components/headers/DefaultHeaderDropdownAccnt";
 import ProjectHeader from "@/components/headers/ProjectHeader";
+import axios from "axios";
 
 export default {
   name: 'DefaultContainer',
@@ -84,7 +78,13 @@ export default {
     }
   },
   methods: {
-
+    check() {
+      axios.get("http://localhost:9000/dashboard")
+      .then(res =>
+      {
+        console.log(res)
+      })
+    }
   },
   created() {
 

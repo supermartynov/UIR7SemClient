@@ -28,10 +28,12 @@
                     <b-form-input type="password"
                                   v-model="form.password"
                                   class="form-control"
-                                  :class="{'is-invalid': !show}"
                                   placeholder="Password"
                                   autocomplete="current-password" />
-                    <small class="invalid-feedback d-block" v-if="show">
+                  </b-input-group>
+
+                  <b-input-group class="mb-4" v-if="show">
+                    <small class="invalid-feedback d-block">
                       Неверный email или пароль
                     </small>
                   </b-input-group>
@@ -45,6 +47,22 @@
                     </b-col>
                   </b-row>
                 </b-form>
+
+                <b-card-footer class="mt-5 bg-white">
+                  <b-row>
+                    <b-col class="text-center mb-2">
+                      Войти с помощью:
+                    </b-col>
+                  </b-row>
+                  <b-row>
+                    <b-col cols="6">
+                      <b-button block class="btn btn-facebook"><span>facebook</span></b-button>
+                    </b-col>
+                    <b-col cols="6">
+                      <b-button block class="btn btn-google-plus" @click="loginWithGoogle" type="button"><span>google</span></b-button>
+                    </b-col>
+                  </b-row>
+                </b-card-footer>
               </b-card-body>
 
             </b-card>
@@ -72,6 +90,7 @@
 import axios from "axios";
 import {validationMixin} from 'vuelidate'
 import {email, required, minLength} from 'vuelidate/lib/validators'
+import axiosConfig from "@/components/auth/axiosConfig";
 
 export default {
   name: 'Login',
@@ -97,19 +116,42 @@ export default {
         this.$v.$touch()
         return
       }
+      axios.defaults.withCredentials = true;
       axios.post("http://localhost:9000/login", {
         username: this.form.email,
         password: this.form.password
-      })
+      }, axiosConfig)
       .then(() => {
         this.$store.commit('SET_USER_NAME', this.form.email)
-        console.log(this.$store.getters.GET_USER_NAME)
+        axios.get("http://localhost:9000/dashboard")
+          .then(res => {
+            this.$store.commit('SET_USER_NAME', res.data.email)
+          })
+          .catch(() => {
+            this.$store.commit('SET_USER_NAME', "Незарегестрированный пользователь")
+          })
         this.show = !this.show
         this.$router.push("/dashboard")
         })
-      .catch(err => {
+      .catch(() => {
         this.show = true
       })
+    },
+    loginWithGoogle() {
+      const newWindow = window.open("http://localhost:9000/google")
+      axios.get("http://localhost:9000/dashboard")
+      .then(res => {
+        this.$store.commit('SET_USER_NAME', res.data.email)
+      })
+      .catch((err) => {
+        console.log(err)
+        this.$store.commit('SET_USER_NAME', "незареганный пользователь")
+      })
+      if (newWindow) {
+        if (newWindow.closed) {
+          this.$router.push("/")
+        }
+      }
     }
   }
 }

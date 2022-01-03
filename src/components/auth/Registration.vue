@@ -73,6 +73,7 @@
 import axios from 'axios';
 import {validationMixin} from 'vuelidate'
 import {email, required, minLength} from 'vuelidate/lib/validators'
+import axiosConfig from "@/components/auth/axiosConfig";
 export default {
   name: 'Register',
   mixins: [validationMixin, ],
@@ -103,7 +104,7 @@ export default {
       axios.post("http://localhost:9000/register", {
         password: this.form.password,
         email: this.form.email
-      })
+      }, {})
       .then(() => {
         this.$router.push("/authorization")
       })
