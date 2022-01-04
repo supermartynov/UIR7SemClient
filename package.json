@@ -69,7 +69,8 @@
     "vue-text-mask": "^6.1.2",
     "vue2-google-maps": "^0.10.6",
     "vuelidate": "^0.7.7",
-    "vuex": "^2.5.0"
+    "vuex": "^3.0.1",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@types/vuelidate": "^0.7.15",

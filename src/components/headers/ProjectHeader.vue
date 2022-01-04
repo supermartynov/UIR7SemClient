@@ -1,7 +1,7 @@
 <template>
   <div>
-    <NonAuthHeadder v-if="!this.$store.getters.GET_USER_NAME"/>
-    <DefaultHeaderDropdownAccnt v-if="$store.getters.GET_USER_NAME"/>
+    <NonAuthHeadder v-if="!this.$store.getters.GET_USER_EMAIL"/>
+    <DefaultHeaderDropdownAccnt v-if="$store.getters.GET_USER_EMAIL"/>
   </div>
 </template>
 

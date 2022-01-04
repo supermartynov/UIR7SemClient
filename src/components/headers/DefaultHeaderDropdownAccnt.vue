@@ -32,7 +32,7 @@
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
 import NonAuthHeadder from "@/components/headers/NonAuthHeadder";
-import axios from "axios";
+import axios from "../../customAxios";
 export default {
   name: 'DefaultHeaderDropdownAccnt',
   components: {
@@ -46,8 +46,8 @@ export default {
   },
   methods: {
     goToLoginPage: function() {
-      axios.get("http://localhost:9000/logout")
-      .then(this.$store.commit("SET_USER_NAME", null))
+      axios.get("/logout")
+      .then(this.$store.commit("SET_USER_EMAIL", null))
     }
   },
 }

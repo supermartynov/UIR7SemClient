@@ -5,16 +5,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    username: ''
+    email: ''
   },
   getters: {
-    GET_USER_NAME: (state) => {
-      return state.username;
+    GET_USER_EMAIL: (state) => {
+      return state.email;
     }
   },
   mutations: {
-    SET_USER_NAME : (state, payload) => {
-      state.username = payload;
+    SET_USER_EMAIL : (state, payload) => {
+      state.email = payload;
     }
   }
 })

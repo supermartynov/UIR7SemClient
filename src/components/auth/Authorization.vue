@@ -55,7 +55,7 @@
                     </b-col>
                   </b-row>
                   <b-row>
-                    <b-col cols="6">
+                    <b-col cols="6" class="col-sm-6 col-md-6">
                       <b-button block class="btn btn-facebook"><span>facebook</span></b-button>
                     </b-col>
                     <b-col cols="6">
@@ -66,7 +66,7 @@
               </b-card-body>
 
             </b-card>
-            <b-card no-body class="text-white bg-primary py-5 d-md-down-none" style="width:44%">
+            <b-card no-body class="text-white bg-primary py-5 d-md-down-none col-md-6 col-sm-6">
               <b-card-body class="text-center">
                 <div>
                   <h2>Не зарегистрированы?</h2>
@@ -87,10 +87,9 @@
 </template>
 
 <script>
-import axios from "axios";
 import {validationMixin} from 'vuelidate'
 import {email, required, minLength} from 'vuelidate/lib/validators'
-import axiosConfig from "@/components/auth/axiosConfig";
+import axios from "@/customAxios";
 
 export default {
   name: 'Login',
@@ -116,37 +115,22 @@ export default {
         this.$v.$touch()
         return
       }
-      axios.defaults.withCredentials = true;
-      axios.post("http://localhost:9000/login", {
+      axios.post("/login", {
         username: this.form.email,
         password: this.form.password
-      }, axiosConfig)
+      })
       .then(() => {
-        this.$store.commit('SET_USER_NAME', this.form.email)
-        axios.get("http://localhost:9000/dashboard")
-          .then(res => {
-            this.$store.commit('SET_USER_NAME', res.data.email)
-          })
-          .catch(() => {
-            this.$store.commit('SET_USER_NAME', "Незарегестрированный пользователь")
-          })
+        this.$store.commit('SET_USER_EMAIL', this.form.email)
         this.show = !this.show
         this.$router.push("/dashboard")
         })
       .catch(() => {
+        this.$store.commit('SET_USER_EMAIL', this.form.email)
         this.show = true
       })
     },
     loginWithGoogle() {
-      const newWindow = window.open("http://localhost:9000/google")
-      axios.get("http://localhost:9000/dashboard")
-      .then(res => {
-        this.$store.commit('SET_USER_NAME', res.data.email)
-      })
-      .catch((err) => {
-        console.log(err)
-        this.$store.commit('SET_USER_NAME', "незареганный пользователь")
-      })
+      const newWindow = window.open("http://localhost:9000/google", "_self")
       if (newWindow) {
         if (newWindow.closed) {
           this.$router.push("/")

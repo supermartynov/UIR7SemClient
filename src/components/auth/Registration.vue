@@ -70,10 +70,9 @@
 </template>
 
 <script>
-import axios from 'axios';
 import {validationMixin} from 'vuelidate'
 import {email, required, minLength} from 'vuelidate/lib/validators'
-import axiosConfig from "@/components/auth/axiosConfig";
+import axios from "@/customAxios";
 export default {
   name: 'Register',
   mixins: [validationMixin, ],
@@ -101,10 +100,10 @@ export default {
         this.$v.$touch()
         return
       }
-      axios.post("http://localhost:9000/register", {
+      axios.post("/register", {
         password: this.form.password,
         email: this.form.email
-      }, {})
+      })
       .then(() => {
         this.$router.push("/authorization")
       })

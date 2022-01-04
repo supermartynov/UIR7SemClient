@@ -49,7 +49,7 @@ import DefaultAside from './DefaultAside'
 import DefaultHeaderDropdown from '../headers/DefaultHeaderDropdown'
 import DefaultHeaderDropdownAccnt from "@/components/headers/DefaultHeaderDropdownAccnt";
 import ProjectHeader from "@/components/headers/ProjectHeader";
-import axios from "axios";
+import axios from "@/customAxios";
 
 export default {
   name: 'DefaultContainer',
@@ -86,8 +86,15 @@ export default {
       })
     }
   },
-  created() {
-
+  beforeCreate() {
+    axios.get("http://localhost:9000/dashboard")
+      .then(res => {
+        this.$store.commit('SET_USER_EMAIL', res.data.email)
+      })
+      .catch((err) => {
+        console.log(err)
+        this.$store.commit('SET_USER_EMAIL', null)
+      })
   },
   computed: {
     name () {
