@@ -19,13 +19,13 @@ export default new Router({
     {
       path: '/',
       redirect: '/dashboard',
-      name: 'Home',
+      name: '',
       component: DefaultContainer,
       children: [
         {
           path: 'dashboard',
-          name: 'Dashboard',
-          component: Dashboard
+          name: 'Персональная страница',
+          component: Dashboard,
         },
       ]
     },
